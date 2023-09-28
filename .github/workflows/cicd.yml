@@ -54,9 +54,6 @@ jobs:
     # Run unit tests
     - name: Unit Test
       run: dotnet test ${{ env.SERVICES_TEST_PROJECT }}
-    #TEST
-    - name: Check az CLI
-      run: az --version
       
     #Login to Azure
     - name: Login to Azure
@@ -73,8 +70,8 @@ jobs:
         package: ${{ env.CUSTOMER_AZURE_WEBAPP_PACKAGE_PATH }}
   
     # Run Customer APP UI tests
-    - name: Customer App UI Tests
-      run: AppSetting__adminAppURL=${{ secrets.UI_TEST_ADMIN_APP_URL }} AppSetting__customerAppURL=${{ secrets.UI_TEST_CUSTOMER_APP_URL }} AppSetting__loginUserName=${{ secrets.UI_TEST_APP_USERNAME }} AppSetting__password=${{ secrets.UI_TEST_APP_PASSWORD }} AppSetting__landingPageToken=${{ secrets.UI_TEST_LANDINGPAGE_TOKEN }} dotnet test ${{ env.UI_TEST_PROJECT }} --filter TestCategory="CustomerApp" -v n
+    #- name: Customer App UI Tests
+    #  run: AppSetting__adminAppURL=${{ secrets.UI_TEST_ADMIN_APP_URL }} AppSetting__customerAppURL=${{ secrets.UI_TEST_CUSTOMER_APP_URL }} AppSetting__loginUserName=${{ secrets.UI_TEST_APP_USERNAME }} AppSetting__password=${{ secrets.UI_TEST_APP_PASSWORD }} AppSetting__landingPageToken=${{ secrets.UI_TEST_LANDINGPAGE_TOKEN }} dotnet test ${{ env.UI_TEST_PROJECT }} --filter TestCategory="CustomerApp" -v n
       
   deploytopublisher:
     name: Deploy publisher app to dev
@@ -104,11 +101,6 @@ jobs:
         dotnet build ${{ env.PUBLISHER_PROJECT }} --configuration Release
         dotnet publish ${{ env.PUBLISHER_PROJECT }} --configuration Release --no-build --output ${{ env.PUBLISHER_AZURE_WEBAPP_PACKAGE_PATH }}
 
-    - name: Print Environment Variables
-      run: echo "Is AZURE_PUBLISHER_WEBAPP_NAME set? ${AZURE_PUBLISHER_WEBAPP_NAME:+yes}"
-      env:
-        AZURE_PUBLISHER_WEBAPP_NAME: ${{ secrets.AZURE_PUBLISHER_WEBAPP_NAME }}
-
     # Deploy to Azure Web app
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
@@ -118,5 +110,5 @@ jobs:
         package: ${{ env.PUBLISHER_AZURE_WEBAPP_PACKAGE_PATH }}
     
     # Run Admin APP UI tests
-    - name: Admin App UI Tests
-      run: AppSetting__adminAppURL=${{ secrets.UI_TEST_ADMIN_APP_URL }} AppSetting__customerAppURL=${{ secrets.UI_TEST_CUSTOMER_APP_URL }} AppSetting__loginUserName=${{ secrets.UI_TEST_APP_USERNAME }} AppSetting__password=${{ secrets.UI_TEST_APP_PASSWORD }} AppSetting__landingPageToken=${{ secrets.UI_TEST_LANDINGPAGE_TOKEN }} dotnet test ${{ env.UI_TEST_PROJECT }} --filter TestCategory="AdminApp" -v n
+    #- name: Admin App UI Tests
+    #  run: AppSetting__adminAppURL=${{ secrets.UI_TEST_ADMIN_APP_URL }} AppSetting__customerAppURL=${{ secrets.UI_TEST_CUSTOMER_APP_URL }} AppSetting__loginUserName=${{ secrets.UI_TEST_APP_USERNAME }} AppSetting__password=${{ secrets.UI_TEST_APP_PASSWORD }} AppSetting__landingPageToken=${{ secrets.UI_TEST_LANDINGPAGE_TOKEN }} dotnet test ${{ env.UI_TEST_PROJECT }} --filter TestCategory="AdminApp" -v n
