@@ -54,7 +54,13 @@ jobs:
     # Run unit tests
     - name: Unit Test
       run: dotnet test ${{ env.SERVICES_TEST_PROJECT }}
-    
+      
+    #Login to Azure
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
     # Deploy to Azure Web app
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
@@ -82,7 +88,13 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }} 
-
+        
+    # Login to Azure
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
     # Run dotnet build and publish
     - name: Build app
       run: |
