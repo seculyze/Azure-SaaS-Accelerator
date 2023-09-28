@@ -104,6 +104,11 @@ jobs:
         dotnet build ${{ env.PUBLISHER_PROJECT }} --configuration Release
         dotnet publish ${{ env.PUBLISHER_PROJECT }} --configuration Release --no-build --output ${{ env.PUBLISHER_AZURE_WEBAPP_PACKAGE_PATH }}
 
+    - name: Print Environment Variables
+      run: echo "Is AZURE_PUBLISHER_WEBAPP_NAME set? ${AZURE_PUBLISHER_WEBAPP_NAME:+yes}"
+      env:
+        AZURE_PUBLISHER_WEBAPP_NAME: ${{ secrets.AZURE_PUBLISHER_WEBAPP_NAME }}
+
     # Deploy to Azure Web app
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
