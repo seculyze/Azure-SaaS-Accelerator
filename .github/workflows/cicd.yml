@@ -60,7 +60,7 @@ jobs:
       
     #Login to Azure
     - name: Login to Azure
-      uses: azure/login@v1
+      uses: azure/login@v1.3.0
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
