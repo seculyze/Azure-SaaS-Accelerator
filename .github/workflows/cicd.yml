@@ -62,7 +62,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1.3.0
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        creds: '{"clientId":"12303195-5aeb-4b29-897e-d81db97d3606", "clientSecret":"n928Q~suj2iCrJsRTVgyIJzuSaPIeK43b_3Micg6", "subscriptionId":"0926d54c-10b3-4efc-ae75-661a6d83017c", "tenantId":"ec37d280-5e6a-4f42-bd78-200f7efe94ca"}'
         
     # Deploy to Azure Web app
     - name: Deploy to Azure WebApp
@@ -96,7 +96,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        creds: '{"clientId":"12303195-5aeb-4b29-897e-d81db97d3606", "clientSecret":"n928Q~suj2iCrJsRTVgyIJzuSaPIeK43b_3Micg6", "subscriptionId":"0926d54c-10b3-4efc-ae75-661a6d83017c", "tenantId":"ec37d280-5e6a-4f42-bd78-200f7efe94ca"}'
         
     # Run dotnet build and publish
     - name: Build app
