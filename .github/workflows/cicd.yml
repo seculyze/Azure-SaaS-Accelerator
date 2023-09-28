@@ -32,7 +32,7 @@ jobs:
   deploytocustomer:
     name: Deploy customer app to dev
     runs-on: ubuntu-latest
-    environment: dev
+    environment: deploy
 
     steps:
 
@@ -79,7 +79,7 @@ jobs:
   deploytopublisher:
     name: Deploy publisher app to dev
     runs-on: ubuntu-latest
-    environment: dev
+    environment: deploy
 
     steps:
 
