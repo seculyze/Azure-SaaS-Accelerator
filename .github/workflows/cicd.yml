@@ -54,6 +54,9 @@ jobs:
     # Run unit tests
     - name: Unit Test
       run: dotnet test ${{ env.SERVICES_TEST_PROJECT }}
+    #TEST
+    - name: Check az CLI
+      run: az --version
       
     #Login to Azure
     - name: Login to Azure
