@@ -1,25 +1,12 @@
-# This workflow will build and push a .NET Core application to an Azure Web App on every push or PR to the main branch.
-#
-# To configure this workflow:
-# 1. Set up secrets
-#     AZURE_CUSTOMER_WEBAPP_NAME - set to the name of the publisher APP
-#     AZURE_CUSTOMER_WEBAPP_PUBLISH_PROFILE - upload contents of Azure Customer App publish profile.
-#     AZURE_PUBLISHER_WEBAPP_NAME - set to the name of the publisher APP
-#     AZURE_PUBLISHER_WEBAPP_PUBLISH_PROFILE - upload contents of Azure Publisher App publish profile.
-#     UI_TEST_ADMIN_APP_URL -  Add the URL of Admin App to perform UI tests
-#     UI_TEST_CUSTOMER_APP_URL  -  Add the URL of Customer App to perform UI tests
-#     UI_TEST_LANDINGPAGE_TOKEN - Add the LandingPage Token of Admin App to perform UI tests
-#     UI_TEST_ADMIN_APP_USERNAME - Add the Username to login to Admin/Customer to perform UI tests
-#     UI_TEST_ADMIN_APP_PASSWORD - Add the Password to login to Admin/Customer to perform UI tests
-
 name: "Build Deploy and Test"
 
 on:
   push:
     branches:
       - main
-
-env:  
+      - demo
+      
+env:
   CUSTOMER_PROJECT: './src/CustomerSite/CustomerSite.csproj'
   PUBLISHER_PROJECT: './src/AdminSite/AdminSite.csproj'
   SERVICES_TEST_PROJECT: './src/Services.Test/Services.Test.csproj'
@@ -30,38 +17,32 @@ env:
   
 jobs:
   deploytocustomer:
-    name: Deploy customer app to dev
+    name: Deploy customer app
     runs-on: ubuntu-latest
-    environment: deploy
-
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'deploy-prod' || 'deploy' }}
+    
     steps:
-
-    # Checkout the repo
     - uses: actions/checkout@v3
 
-    # Setup .NET Core SDK
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }} 
-
-    # Run dotnet build and publish
+    
     - name: Build app
       run: |
         dotnet build ${{ env.CUSTOMER_PROJECT }} --configuration Release
         dotnet publish ${{ env.CUSTOMER_PROJECT }} --configuration Release --no-build --output ${{ env.CUSTOMER_AZURE_WEBAPP_PACKAGE_PATH }}
     
-    # Run unit tests
     - name: Unit Test
       run: dotnet test ${{ env.SERVICES_TEST_PROJECT }}
       
-    #Login to Azure
     - name: Login to Azure
-      uses: azure/login@v1.3.0
+      uses: azure/login@v1
       with:
-        creds: '{"clientId":"12303195-5aeb-4b29-897e-d81db97d3606", "clientSecret":"n928Q~suj2iCrJsRTVgyIJzuSaPIeK43b_3Micg6", "subscriptionId":"0926d54c-10b3-4efc-ae75-661a6d83017c", "tenantId":"ec37d280-5e6a-4f42-bd78-200f7efe94ca"}'
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-    # Deploy to Azure Web app
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
@@ -69,46 +50,33 @@ jobs:
         publish-profile: ${{ secrets.AZURE_CUSTOMER_WEBAPP_PUBLISH_PROFILE }}
         package: ${{ env.CUSTOMER_AZURE_WEBAPP_PACKAGE_PATH }}
   
-    # Run Customer APP UI tests
-    #- name: Customer App UI Tests
-    #  run: AppSetting__adminAppURL=${{ secrets.UI_TEST_ADMIN_APP_URL }} AppSetting__customerAppURL=${{ secrets.UI_TEST_CUSTOMER_APP_URL }} AppSetting__loginUserName=${{ secrets.UI_TEST_APP_USERNAME }} AppSetting__password=${{ secrets.UI_TEST_APP_PASSWORD }} AppSetting__landingPageToken=${{ secrets.UI_TEST_LANDINGPAGE_TOKEN }} dotnet test ${{ env.UI_TEST_PROJECT }} --filter TestCategory="CustomerApp" -v n
-      
   deploytopublisher:
-    name: Deploy publisher app to dev
+    name: Deploy publisher app
     runs-on: ubuntu-latest
-    environment: deploy
-
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'deploy-prod' || 'deploy' }}
+    
     steps:
-
-    # Checkout the repo
     - uses: actions/checkout@v3
-
-    # Setup .NET Core SDK
+    
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }} 
         
-    # Login to Azure
     - name: Login to Azure
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-    # Run dotnet build and publish
     - name: Build app
       run: |
         dotnet build ${{ env.PUBLISHER_PROJECT }} --configuration Release
         dotnet publish ${{ env.PUBLISHER_PROJECT }} --configuration Release --no-build --output ${{ env.PUBLISHER_AZURE_WEBAPP_PACKAGE_PATH }}
 
-    # Deploy to Azure Web app
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ secrets.AZURE_PUBLISHER_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_PUBLISHER_WEBAPP_PUBLISH_PROFILE }}
         package: ${{ env.PUBLISHER_AZURE_WEBAPP_PACKAGE_PATH }}
-    
-    # Run Admin APP UI tests
-    #- name: Admin App UI Tests
-    #  run: AppSetting__adminAppURL=${{ secrets.UI_TEST_ADMIN_APP_URL }} AppSetting__customerAppURL=${{ secrets.UI_TEST_CUSTOMER_APP_URL }} AppSetting__loginUserName=${{ secrets.UI_TEST_APP_USERNAME }} AppSetting__password=${{ secrets.UI_TEST_APP_PASSWORD }} AppSetting__landingPageToken=${{ secrets.UI_TEST_LANDINGPAGE_TOKEN }} dotnet test ${{ env.UI_TEST_PROJECT }} --filter TestCategory="AdminApp" -v n
