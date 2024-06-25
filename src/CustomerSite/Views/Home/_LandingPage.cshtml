@@ -5,9 +5,7 @@
 
 @{
     ViewData["Title"] = "Home";
-}
-@{
-    var token = ViewBag.Token as string;
+    var token = Model as string;
 }
 @if (!Model.ShowWelcomeScreen)
 {

@@ -1,4 +1,7 @@
 ﻿
+@{
+    var token = ViewBag.Token;
+}
 <div id="divIndex">
-    @await Html.PartialAsync("_LandingPage")
+    @await Html.PartialAsync("_LandingPage", token)
 </div>
