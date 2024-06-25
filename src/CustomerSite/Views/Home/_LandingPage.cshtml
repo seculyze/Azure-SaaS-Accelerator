@@ -6,6 +6,9 @@
 @{
     ViewData["Title"] = "Home";
 }
+@{
+    var token = ViewBag.Token as string;
+}
 @if (!Model.ShowWelcomeScreen)
 {
     <div class="container" id="divHome">
@@ -232,8 +235,14 @@ else
     </div>
 }
 <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+                var token = '@token';
+                console.log("Token:", token);
 
-    function SubscriptionOperation(subscriptionId, planId, operation) {
+                const redirectUrl = 'http://localhost:8000/'
+
+
+                function SubscriptionOperation(subscriptionId, planId, operation) {
         if (validate()) {
             var formobject = $('#frmIndex').serialize();
             $.ajax({
@@ -243,6 +252,7 @@ else
                 cache: false,
                 success: function (result) {
                     $('#divIndex').html(result);
+                    window.location.href = `${redirectUrl}?token=${token}`;
                 },
                 Error:
                     function (result) {
@@ -269,4 +279,7 @@ else
         });
         return valid;
     }
+    });
+
+    
 </script>
