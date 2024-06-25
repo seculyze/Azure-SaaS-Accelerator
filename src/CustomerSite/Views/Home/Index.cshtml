@@ -3,5 +3,14 @@
     var token = ViewBag.Token;
 }
 <div id="divIndex">
-    @await Html.PartialAsync("_LandingPage", token)
+    @await Html.PartialAsync("_LandingPage")
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function (){
+        var token = '@Model.Token';
+        console.log("Token 2:", token);
+    }
+    </script>
+}
