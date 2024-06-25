@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using System.Security.Claims;
 
 namespace Marketplace.SaaS.Accelerator.CustomerSite.Controllers;
 
@@ -18,10 +20,34 @@ public class AccountController : Controller
     /// <returns>
     /// The <see cref="IActionResult" />.
     /// </returns>
-    public IActionResult SignIn(string returnUrl)
+
+    public async Task<IActionResult> SignIn(string returnUrl)
     {
-        return this.Challenge(new AuthenticationProperties { RedirectUri = "/" }, OpenIdConnectDefaults.AuthenticationScheme);
+        var redirectUrl = Url.Action(nameof(HandleToken), "Account", new { returnUrl });
+        return this.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl }, OpenIdConnectDefaults.AuthenticationScheme);
     }
+
+    public async Task<IActionResult> HandleToken(string returnUrl)
+    {
+        var result = await HttpContext.AuthenticateAsync(OpenIdConnectDefaults.AuthenticationScheme);
+        
+        if (result?.Principal != null)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            var idToken = await HttpContext.GetTokenAsync("id_token");
+
+            // Send the token to the frontend. This example returns it as part of the query string.
+            // For security reasons, prefer returning it in a secure cookie or via a secure API.
+            return Redirect($"{returnUrl}?access_token={accessToken}&id_token={idToken}");
+        }
+
+        return RedirectToAction("SignIn");
+    }
+
+    // public IActionResult SignIn(string returnUrl)
+    // {
+    //     return this.Challenge(new AuthenticationProperties { RedirectUri = "/" }, OpenIdConnectDefaults.AuthenticationScheme);
+    // }
 
     /// <summary>
     /// The SignOut.
