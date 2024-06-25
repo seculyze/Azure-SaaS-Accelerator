@@ -1,5 +1,6 @@
 ﻿@{
     var token = ViewBag.Token;
+    var tempToken = ViewBag.tempToken;
 }
 <div id="divIndex">
     @await Html.PartialAsync("_LandingPage")
@@ -9,7 +10,9 @@
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function (){
             var token = '@ViewBag.Token';
+            var tempToken = '@ViewBag.tempToken';
             console.log("Token in Index:", token);
+            console.log("TempToken in Index:", tempToken);
         });
     </script>
 }

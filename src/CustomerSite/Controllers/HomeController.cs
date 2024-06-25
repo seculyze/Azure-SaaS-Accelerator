@@ -199,7 +199,9 @@ public class HomeController : BaseController
             SubscriptionResult subscriptionDetail = new SubscriptionResult();
             SubscriptionResultExtension subscriptionExtension = new SubscriptionResultExtension();
 
-            ViewBag.Token = "TestToken123";
+            ViewBag.TestToken = "test token index";
+            ViewBag.Token = token;
+            TempData["TempToken"] = token;
 
             this.applicationConfigService.SaveFileToDisk("LogoFile", "contoso-sales.png");
             this.applicationConfigService.SaveFileToDisk("FaviconFile", "favicon.ico");
@@ -307,6 +309,10 @@ public class HomeController : BaseController
         {
             if (this.User.Identity.IsAuthenticated)
             {
+
+                string token = TempData["TempToken"] as string;
+                ViewBag.tempToken = token;
+
                 this.TempData["ShowWelcomeScreen"] = "True";
                 SubscriptionViewModel subscriptionDetail = new SubscriptionViewModel();
                 subscriptionDetail.Subscriptions = this.subscriptionService.GetPartnerSubscription(this.CurrentUserEmailAddress, default, true).ToList();
@@ -802,14 +808,21 @@ public class HomeController : BaseController
     /// <param name="planId">The plan identifier.</param>
     /// <param name="operation">The operation.</param>
     /// <returns> Subscriptions View. </returns>
-    public IActionResult ViewSubscription(Guid subscriptionId, string planId, string operation)
+    public IActionResult ViewSubscription(Guid subscriptionId, string planId, string operation, string token = null)
     {
         try
         {
             SubscriptionResultExtension subscriptionDetail = new SubscriptionResultExtension();
 
+            string token = TempData["TempToken"] as string;
+            ViewBag.tempToken = token;
+
             if (this.User.Identity.IsAuthenticated)
             {
+
+                ViewBag.TestToken = "test token viewsubscription";
+                ViewBag.Token = token;
+
                 var userId = this.userService.AddUser(this.GetCurrentUserDetail());
                 var currentUserId = this.userService.GetUserIdFromEmailAddress(this.CurrentUserEmailAddress);
                 this.subscriptionService = new SubscriptionService(this.subscriptionRepository, this.planRepository, userId);
