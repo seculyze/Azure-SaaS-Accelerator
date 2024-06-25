@@ -199,7 +199,7 @@ public class HomeController : BaseController
             SubscriptionResult subscriptionDetail = new SubscriptionResult();
             SubscriptionResultExtension subscriptionExtension = new SubscriptionResultExtension();
 
-            ViewBag.Token = token;
+            ViewBag.Token = "TestToken123";
 
             this.applicationConfigService.SaveFileToDisk("LogoFile", "contoso-sales.png");
             this.applicationConfigService.SaveFileToDisk("FaviconFile", "favicon.ico");
@@ -213,7 +213,6 @@ public class HomeController : BaseController
                 if (!string.IsNullOrEmpty(token))
                 {
                     this.TempData["ShowWelcomeScreen"] = null;
-                    ViewBag.Token = token;
                     token = token.Replace(' ', '+');
                     var newSubscription = await this.apiService.ResolveAsync(token).ConfigureAwait(false);
                     if (newSubscription != null && newSubscription.SubscriptionId != default)
