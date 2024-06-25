@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     var token = ViewBag.Token;
 }
 <div id="divIndex">
@@ -8,9 +7,9 @@
 
 @section Scripts {
     <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function (){
-        var token = '@Model.Token';
-        console.log("Token 2:", token);
-    }
+        document.addEventListener('DOMContentLoaded', function (){
+            var token = '@ViewBag.Token';
+            console.log("Token in Index:", token);
+        });
     </script>
 }
