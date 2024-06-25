@@ -808,7 +808,7 @@ public class HomeController : BaseController
     /// <param name="planId">The plan identifier.</param>
     /// <param name="operation">The operation.</param>
     /// <returns> Subscriptions View. </returns>
-    public IActionResult ViewSubscription(Guid subscriptionId, string planId, string operation, string token = null)
+    public IActionResult ViewSubscription(Guid subscriptionId, string planId, string operation)
     {
         try
         {
@@ -819,9 +819,6 @@ public class HomeController : BaseController
 
             if (this.User.Identity.IsAuthenticated)
             {
-
-                ViewBag.TestToken = "test token viewsubscription";
-                ViewBag.Token = token;
 
                 var userId = this.userService.AddUser(this.GetCurrentUserDetail());
                 var currentUserId = this.userService.GetUserIdFromEmailAddress(this.CurrentUserEmailAddress);
